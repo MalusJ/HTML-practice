@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head> 
+<meta charset="utf-8"> 
+<title>计算器</title>
+<style type="text/css">
+
+button{
+    
+    width: 43px;
+    height: 43px;
+    font-size: 20px;
+    margin-left: 3px;
+    margin-right: 3px;
+    margin-bottom: 3px;
+    float:left;
+    display:inline-block;
+    border-radius: 5px 5px 5px 5px;
+}
+.num{
+   
+}
+
+</style>
+<script>
+
+function accAdd(arg1,arg2){  //0.1+0.2=0.3
+  var r1,r2,m;
+  try{r1=arg1.toString().split(".")[1].length}catch(e){r1=0}
+  try{r2=arg2.toString().split(".")[1].length}catch(e){r2=0}
+  console.log("r1 r2 m" + r1 + " " + r2 + " " + m);
+  m=Math.pow(10,Math.max(r1,r2))
+  return (arg1*m+arg2*m)/m
+}
+
+
+
+
+
+
+
+var number = 0;
+var numList = new Array();
+var prevSign = " ";
+var dot=false;
+var dotCount=1;
+
+function inputNumber(obj)
+{
+    document.scrollingElement.scrollHeight=1 + "px";
+    function clear(){
+       
+        numList.splice(0,numList.length);
+        number=0;
+        dot = false;
+        dotCount=1;
+        text.innerHTML="0";
+    }
+
+
+   
+    
+    if (obj == '.'){   //输入.
+        if (dot == true){
+            window.alert("cannot press dot twice");
+            clear();
+            return;
+            
+        }else{
+            dot = true;
+        }
+    }
+
+    if (obj=='1'||obj=='2'||obj=='3'||obj=='4'||obj=='5'||obj=='6'||obj=='7'||obj=='8'||obj=='9'||obj=='0'||obj=='.'){ //当输入是数字时
+        console.log("number");
+        text=document.getElementById("show");
+       if (text.innerHTML == "0"){ //当显示为0时
+          if(dot == true){
+            text.innerHTML += obj; 
+            return;
+          }else{
+          number = Number(obj);
+          text.innerHTML = obj;}
+       }else{
+          if (dot == true){
+            text.innerHTML+=obj;
+            if(obj == '.'){
+                return;
+            }
+            number = number + (Number(obj) * Math.pow(0.1,dotCount));
+            dotCount++;
+          }
+          else{
+          text.innerHTML+=obj;
+          number = number*10 + Number(obj);
+          }
+        }
+
+    }
+    else if(obj == "c"){ //当输入为c
+            console.log("c");
+            clear();
+    }
+    else{ //当输入为加减乘除等于
+      dot = false;
+      dotCount = 1;
+      if(prevSign!=" "){ //如果不是第一次运算
+        
+        switch(prevSign){
+            case "+":
+                text.innerHTML+=obj;
+                numList.push(number);
+                number=0;
+                
+                break;
+            case "-":
+                
+                text.innerHTML+=obj;
+                number = -number;
+                numList.push(number);
+                number=0;
+                
+                break;
+            case "×":
+                text.innerHTML+=obj;
+                numList[numList.length-1]=numList[numList.length-1] * number;
+                number=0;
+                break;
+            case "÷":
+                text.innerHTML+=obj;
+                numList[numList.length-1]=numList[numList.length-1] / number;
+                number=0;
+                break;
+                
+        }
+        if(obj=="="){
+            console.log("=")
+            number = 0;
+            
+            for (a in numList){
+                number = accAdd(number,numList[a]);
+             //   number += numList[a];
+            }
+            
+            text.innerHTML=number.toString();
+            numList.splice(0,numList.length);
+            prevSign=" ";      
+        }
+      }else{ //如果是第一次运算
+        
+        if(obj!='='){
+        numList.push(number);
+        number=0;
+        text.innerHTML+=obj;
+        }
+      }
+      
+      if(obj=="="){
+          prevSign=" ";
+      }else{
+      prevSign = obj;
+      }
+    }
+    console.log("number is " + number);
+    console.log("dot " + dot + " " + dotCount);
+  
+}
+    
+
+</script>
+
+</head>
+<body>
+
+<div style="height: 305px;width: 200px; border: solid gray 5px;margin-left:40%;display: block;">
+<p id="show" style="margin-left:5px;border:3px solid;border-left:3px solid;border-right:3px solid;width:185px;height:50px;text-align: right;font-size: 30px;margin-top: 10px;margin-bottom: 5px;overflow:auto;" >0</p>
+
+<div style="margin-bottom: 5px;height:43px;">
+<button type="button" id="+" onclick="inputNumber('+')">+</button>
+<button type="button" id="-" onclick="inputNumber('-')">-</button>
+<button type="button" id="×" onclick="inputNumber('×')">×</button>
+<button type="button" id="÷" onclick="inputNumber('÷')">÷</button>
+</div>
+
+<div style = "height:43px;width:75%">
+<button type="button" id="1" class="num" onclick="inputNumber('1')">1</button>
+<button type="button" id="2" class="num" onclick="inputNumber('2')">2</button>
+<button type="button" id="3" class="num" onclick="inputNumber('3')">3</button>
+
+</div>
+
+<div style = "height:43px;width:75%">
+<button type="button" id="4" class="num" onclick="inputNumber('4')">4</button>
+<button type="button" id="5" class="num" onclick="inputNumber('5')">5</button>
+<button type="button" id="6" class="num" onclick="inputNumber('6')">6</button>
+</div>
+
+<div style = "height:43px;width:75%">
+<button type="button" id="7" class="num" onclick="inputNumber('7')">7</button>
+<button type="button" id="8" class="num" onclick="inputNumber('8')">8</button>
+<button type="button" id="9" class="num" onclick="inputNumber('9')">9</button>
+</div>
+
+<div style = "height:43px;width:75%">
+<button type="button" id="c" onclick="inputNumber('c')">C</button>
+<button type="button" id="0" class="num" onclick="inputNumber('0')">0</button>
+<button type="button" id="." onclick="inputNumber('.')">.</button>
+</div>
+<button type="button" id="=" onclick="inputNumber('=')" style="float:left;left:7605x;height: 180px;top: 135px;position:absolute">=</button>
+</div>
+</body>
+</html>
