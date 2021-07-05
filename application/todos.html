@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>VUE testing</title>
+<script src="vue.js" type="text/javascript" charset="utf-8"></script>
+<style type="text/css">
+input::-webkit-input-placeholder{
+    color:lightgray;
+    font-style:italic;
+}
+body{
+    background-color: rgb(245, 245,245);
+   
+    padding:0;
+    margin:0;
+    border:0;
+}
+div{   
+    border:0;
+    padding:0;
+}
+#main{
+    margin-top:100px;
+    height:700px;
+    padding-left: 25%;
+    
+    
+}
+.box{
+    width:700px;
+    height: 60px;
+    padding:2px;
+    border: rgb(182, 182, 182) 1px solid;
+    padding-left:15px;
+
+
+}
+.check-list{
+    list-style: none;
+    border:0;
+    padding:0;
+    margin:0;
+}
+.element{
+    font-size: 25px;
+    color:rgb(83, 82, 82);
+    overflow: auto;
+}
+</style>
+</head>
+<body>
+<div id="main">
+<h1 style="font-size: 100px;color: rgb(234, 215,215);margin-bottom: 0;margin-left: 20%;">todos</h1>
+
+<div id="app">
+    <input class="box" v-model='newText' @keyup.enter='addNewElement()' placeholder="what needs to be done" style="font-size: 25px;" />
+    <button @click='clearAll()' style="margin-left: 10px; color:rgb(162, 169, 179);font-size:30px;border-radius: 4px;border-color: aliceblue;">clear</button>
+    <ul class="check-list">
+        
+        <li v-if="display=='unfinished'" v-for='(element,index) in elements' v-bind:key='element.id' class="box element"><input type="checkbox" @click='selectElement(index)' />{{element.title}}</li>
+        <li v-if="display=='finished'" v-for='(element,index) in completed' v-bind:key='element.id' class="box element">{{element.title}}</li>
+        <li class="box" style="height: 25px;" >
+            <a style="color:gray">{{elements.length}} items left to do.   </a>
+            <button @click='switchToAll()' style="margin-left:20%;">TODO</button>
+            <button @click='switchList()'>Completed</button>
+            <button @click='clearElement()'style="float:right">Finish</button></li>
+    </ul>
+
+</div>
+
+<script type="text/javascript">
+var vm = new Vue({
+    el:'#app',
+    data:{
+        display:"unfinished",
+        newText:"",
+        elements:[],
+        nextIndex :1,
+        selected:[],    
+        completed:[]
+    },
+    methods:{
+        clearAll:function(){
+            this.newText = "";
+            this.elements = [];
+            this.newIndex = 1;
+            this.selected = [];
+            this.completed = [];
+        },
+        addNewElement:function(){         //回车触发
+            var repeat = false;
+            for (var i =0;i< this.elements.length;i++){
+                if (this.newText == this.elements[i].title){
+                    repeat = true;
+                    break;
+                }
+            }
+
+            if (this.newText=="" ){
+                window.alert("put some content");
+            }else if(repeat){ //重复element
+                window.alert("repeated todo");
+            }else{
+            this.elements.push({id:this.nextIndex,title:this.newText});
+            this.nextIndex ++;
+            this.newText="";
+            }
+        },
+        selectElement:function(ElementID){   //机制修改
+            
+            console.log(ElementID);
+
+            if (this.selected.indexOf(ElementID)== -1){
+                this.selected.push(ElementID);
+            }else{
+                this.selected.splice(this.selected.indexOf(ElementID),1);
+            }
+            
+            console.log("selected" + this.selected);
+        },
+        clearElement:function(){
+            this.selected.sort();
+            var num = this.selected.length;
+            for (var i = num-1; i >= 0; i--) {
+                this.completed.push(this.elements[this.selected[i]]);
+                this.elements.splice(this.selected[i],1,);
+            }
+            console.log(this.elements)
+            this.selected=[]; 
+        },
+        switchList:function(){
+            this.display = "finished";
+        },
+        switchToAll:function(){
+            this.display = "unfinished";
+        }
+    }
+});
+//vm.$watch(elements,function(newVal,oldVal){
+//    console.log(newVal,oldVal)
+//})
+
+</script>
+
+</div>
+</body>
+</html>
